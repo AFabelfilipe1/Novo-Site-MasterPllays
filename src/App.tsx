@@ -11,9 +11,9 @@ import AboutPage from './pages/AboutPage';
 import GamesPage from './pages/GamesPage';
 import VlogsPage from './pages/VlogsPage';
 import NotFound from './pages/NotFound';
+import Layout from './components/layout'; // Verifique se o caminho está correto
 import { ThemeProvider } from './contexts/ThemeContext';
 import { ErrorBoundary } from './components/ErrorBoundary';
-import Layout from './components/layout';
 
 export const App: React.FC = () => {
   return (
