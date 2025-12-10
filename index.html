@@ -3,16 +3,26 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="MasterPllays - Plataforma de vídeos, games e entretenimento">
-    <meta name="keywords" content="vídeos, games, vlogs, entretenimento, streaming">
-    <meta name="author" content="MasterPllays">
-    <link rel="icon" href="/favicon.ico" type="image/x-icon">
-    <title>MasterPllays - Your Entertainment Hub</title>
-    <!-- Se estiver usando Tailwind, adicione: -->
-    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+    <title>MasterPllays</title>
+    <!-- Adicione base href -->
+    <base href="/Novo-Site-MasterPflage/" />
+    <!-- CSS inline como fallback -->
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font-family: system-ui, -apple-system, sans-serif; background: #f8fafc; }
+      .loader { border: 2px solid #f3f3f3; border-top: 2px solid #3498db; border-radius: 50%; width: 16px; height: 16px; animation: spin 1s linear infinite; }
+      @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Mensagem de carregamento -->
+      <div style="display: flex; justify-content: center; align-items: center; height: 100vh; flex-direction: column; gap: 20px;">
+        <div style="font-size: 24px; font-weight: bold; color: #3b82f6;">🎮 MasterPllays</div>
+        <div class="loader"></div>
+        <div style="color: #64748b; font-size: 14px;">Carregando...</div>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
