@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+html, body, #root { height: 100%; }
+body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; }
+
+
+/* tiny loader used by Button */
+.loader {
+width: 1rem; height: 1rem; border-radius: 9999px; border: 2px solid rgba(255,255,255,0.4); border-top-color: rgba(255,255,255,0.9); animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
