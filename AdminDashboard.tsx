@@ -186,4 +186,16 @@ const AdminDashboard: React.FC = () => {
                 <p className="text-gray-600">Tempo Médio por Sessão</p>
               </div>
               <div className="text-center p-6 bg-purple-50 rounded-xl">
-                <div className="text-4xl mb
+                <div className="text-4xl mb-4">📈</div>
+                <div className="text-2xl font-bold mb-2">68%</div>
+                <p className="text-gray-600">Taxa de Retenção</p>
+              </div>
+            </div>
+          </Card>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default AdminDashboard;
