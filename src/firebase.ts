@@ -13,8 +13,7 @@ const firebaseConfig = {
   projectId: "masterplays",
   storageBucket: "masterplays.firebasestorage.app",
   messagingSenderId: "554976769966",
-  appId: "1:554976769966:web:4fc12441ac7ea490757a3f",
-  measurementId: "G-6MGFHZ7N76"
+  appId: "1:554976769966:web:4fc12441ac7ea490757a3f"
 };
 
 // Initialize Firebase
