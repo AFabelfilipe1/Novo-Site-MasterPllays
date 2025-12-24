@@ -6,6 +6,8 @@ import Videos from './pages/Videos'
 import Auth from './pages/Auth'
 import Planos from './pages/Planos'
 import NotFound from './pages/NotFound'
+// @ts-ignore
+import SimpleTest from './components/SimpleTest'
 
 function App() {
   return (
@@ -16,6 +18,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/videos" element={<Videos />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/test" element={<SimpleTest />} />
           <Route path="/planos" element={<Planos />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
