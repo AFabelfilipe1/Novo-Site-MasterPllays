@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Teste Firebase CORRIGIDO</title>
+</head>
+<body style="padding: 40px; font-family: Arial;">
+    <h1>🔧 Teste Firebase - Domínio CORRIGIDO</h1>
+
+    <div id="domainCheck" style="padding: 20px; margin: 20px 0; border-radius: 10px;"></div>
+
+    <button onclick="login()" style="padding: 15px 30px; font-size: 18px; background: #4285F4; color: white; border: none; border-radius: 5px; cursor: pointer;">
+        🔐 Testar Login Google
+    </button>
+
+    <div id="result" style="margin-top: 30px; padding: 20px; background: #f5f5f5; border-radius: 10px; min-height: 100px;"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"></script>
+
+    <script>
+        // Verificar domínio atual
+        const currentDomain = window.location.hostname;
+        const domainCheck = document.getElementById('domainCheck');
+
+        if (currentDomain === 'afabelfilipe1.github.io') {
+            domainCheck.style.background = '#d4edda';
+            domainCheck.innerHTML = `
+                <h3>✅ Domínio CORRETO!</h3>
+                <p><strong>Domínio atual:</strong> ${currentDomain}</p>
+                <p>Este domínio precisa estar na lista do Firebase</p>
+            `;
+        } else if (currentDomain.includes('afabelflipet')) {
+            domainCheck.style.background = '#f8d7da';
+            domainCheck.innerHTML = `
+                <h3>❌ Domínio ERRADO!</h3>
+                <p><strong>Domínio atual:</strong> ${currentDomain}</p>
+                <p>Você está acessando com "afabelflipet" (com T)</p>
+                <p>O correto é: <strong>afabelfilipe1</strong> (com o número 1)</p>
+                <p><a href="https://afabelfilipe1.github.io/masterplays/test-fixed.html" style="color: #dc3545; font-weight: bold;">
+                    🔗 Clique aqui para acessar o domínio correto
+                </a></p>
+            `;
+        } else {
+            domainCheck.style.background = '#fff3cd';
+            domainCheck.innerHTML = `
+                <h3>⚠️ Domínio diferente</h3>
+                <p><strong>Domínio atual:</strong> ${currentDomain}</p>
+                <p>Este domínio precisa estar na lista "Authorized domains" do Firebase</p>
+            `;
+        }
+
+        // Configuração Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBZqfKbDO4EP8ua3Sv1gOhNgY31gZPmHwU",
+            authDomain: "masterpllays.firebaseapp.com",
+            projectId: "masterpllays",
+            storageBucket: "masterpllays.firebasestorage.app",
+            messagingSenderId: "554976769966",
+            appId: "1:554976769966:web:4fc12441ac7ea490757a3f",
+            measurementId: "G-6MGFHZ7N76"
+        };
+
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.getAuth(app);
+
+        document.getElementById('result').innerHTML = `
+            <strong>Status Firebase:</strong> Configurado<br>
+            <strong>Projeto:</strong> ${firebaseConfig.projectId}<br>
+            <strong>Domínio Auth:</strong> ${firebaseConfig.authDomain}
+        `;
+
+        async function login() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Abrindo popup do Google...';
+
+            try {
+                const provider = new firebase.GoogleAuthProvider();
+                const result = await firebase.signInWithPopup(auth, provider);
+
+                resultDiv.innerHTML = `
+                    <div style="background: #d4edda; color: #155724; padding: 20px; border-radius: 10px;">
+                        <h3>✅ LOGIN BEM-SUCEDIDO!</h3>
+                        <p><strong>Nome:</strong> ${result.user.displayName}</p>
+                        <p><strong>Email:</strong> ${result.user.email}</p>
+                    </div>
+                `;
+
+            } catch (error) {
+                let errorHtml = `
+                    <div style="background: #f8d7da; color: #721c24; padding: 20px; border-radius: 10px;">
+                        <h3>❌ ERRO: ${error.code}</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+
+                if (error.code === 'auth/unauthorized-domain') {
+                    errorHtml += `
+                        <div style="background: #fff3cd; color: #856404; padding: 15px; border-radius: 5px; margin-top: 15px;">
+                            <h4>🔧 SOLUÇÃO IMEDIATA:</h4>
+                            <p>1. Vá para Firebase Console</p>
+                            <p>2. Authentication → Settings → Authorized domains</p>
+                            <p>3. Clique em "Adicionar domínio"</p>
+                            <p>4. Digite: <code>${currentDomain}</code></p>
+                            <p>5. Clique em "Adicionar"</p>
+                            <a href="https://console.firebase.google.com/project/masterpllays/authentication/settings"
+                               target="_blank"
+                               style="display: inline-block; background: #dc3545; color: white; padding: 8px 16px; border-radius: 5px; text-decoration: none; margin-top: 10px;">
+                                🔗 Abrir Configurações Agora
+                            </a>
+                        </div>
+                    `;
+                }
+
+                resultDiv.innerHTML = errorHtml;
+            }
+        }
+    </script>
+
+    <div style="margin-top: 40px; padding: 20px; background: #e3f2fd; border-radius: 10px;">
+        <h3>📝 O QUE FAZER AGORA:</h3>
+        <ol>
+            <li><strong>Verifique o domínio atual acima</strong></li>
+            <li><strong>Adicione esse domínio no Firebase Console</strong></li>
+            <li><strong>Certifique-se que está acessando com "afabelfilipe1" (número 1)</strong></li>
+            <li><strong>Ative Google Sign-in (se ainda não fez)</strong></li>
+        </ol>
+    </div>
+</body>
+</html>
