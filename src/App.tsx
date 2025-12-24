@@ -1,31 +1,13 @@
-import { Routes, Route } from 'react-router-dom'
-import Header from './components/Header'
-import Footer from './components/Footer'
-import Home from './pages/Home'
-import Videos from './pages/Videos'
-import Auth from './pages/Auth'
-import Planos from './pages/Planos'
-import NotFound from './pages/NotFound'
+// src/App.js
 // @ts-ignore
-import SimpleTest from './components/SimpleTest'
+import SimpleTest from './components/SimpleTest';
 
 function App() {
   return (
-    <div className="flex flex-col min-h-screen">
-      <Header />
-      <main className="flex-grow">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/videos" element={<Videos />} />
-          <Route path="/auth" element={<Auth />} />
-          <Route path="/test" element={<SimpleTest />} />
-          <Route path="/planos" element={<Planos />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </main>
-      <Footer />
+    <div className="App">
+      <SimpleTest />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
