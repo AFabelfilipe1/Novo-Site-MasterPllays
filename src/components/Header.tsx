@@ -15,6 +15,11 @@ export default function Header() {
               </Link>
             </li>
             <li>
+              <Link to="/videos" className="hover:text-gray-300 transition-colors">
+                Vídeos
+              </Link>
+            </li>
+            <li>
               <Link to="/planos" className="hover:text-gray-300 transition-colors">
                 Planos
               </Link>

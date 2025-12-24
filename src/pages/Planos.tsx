@@ -1,10 +1,16 @@
 import { useState } from 'react'
 
+interface Plan {
+  nome: string
+  preco: string
+  recursos: string[]
+}
+
 export default function Planos() {
-  const [selectedPlan, setSelectedPlan] = useState(null)
+  const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null)
   const [showModal, setShowModal] = useState(false)
 
-  const planos = [
+  const planos: Plan[] = [
     {
       nome: "Básico",
       preco: "R$ 19,90/mês",
@@ -22,14 +28,16 @@ export default function Planos() {
     }
   ]
 
-  const handleChoosePlan = (plano) => {
+  const handleChoosePlan = (plano: Plan) => {
     setSelectedPlan(plano)
     setShowModal(true)
   }
 
-  const handlePayment = (method) => {
-    alert(`Pagamento do plano ${selectedPlan.nome} via ${method} processado com sucesso!`)
-    setShowModal(false)
+  const handlePayment = (method: string) => {
+    if (selectedPlan) {
+      alert(`Pagamento do plano ${selectedPlan.nome} via ${method} processado com sucesso!`)
+      setShowModal(false)
+    }
   }
 
   return (
@@ -73,7 +81,7 @@ export default function Planos() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-8 rounded-lg max-w-md w-full mx-4">
             <h2 className="text-2xl font-bold mb-4">Escolher Método de Pagamento</h2>
-            <p className="mb-6">Plano selecionado: <strong>{selectedPlan.nome}</strong> - {selectedPlan.preco}</p>
+            <p className="mb-6">Plano selecionado: <strong>{selectedPlan?.nome}</strong> - {selectedPlan?.preco}</p>
             
             <div className="space-y-3">
               <button 
