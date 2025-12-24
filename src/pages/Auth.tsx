@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { signInWithRedirect, getRedirectResult, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
+import { useState } from 'react'
+import { signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
 import { auth, googleProvider } from '../firebase'
 
 export default function Auth() {
@@ -11,24 +11,6 @@ export default function Auth() {
     password: ''
   })
 
-  useEffect(() => {
-    const handleRedirectResult = async () => {
-      try {
-        const result = await getRedirectResult(auth)
-        if (result) {
-          console.log('Google sign-in successful:', result.user)
-          alert('Login com Google realizado com sucesso!')
-        }
-      } catch (error: any) {
-        console.error('Google redirect error:', error)
-        if (error.code !== 'auth/redirect-cancelled-by-user') {
-          alert('Erro no login com Google: ' + error.message)
-        }
-      }
-    }
-    handleRedirectResult()
-  }, [])
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
@@ -38,10 +20,12 @@ export default function Auth() {
 
   const handleGoogleSignIn = async () => {
     try {
-      await signInWithRedirect(auth, googleProvider)
+      const result = await signInWithPopup(auth, googleProvider)
+      console.log('Google sign-in successful:', result.user)
+      alert('Login com Google realizado com sucesso!')
     } catch (error: any) {
       console.error('Google sign-in error:', error)
-      alert('Erro ao iniciar login com Google: ' + error.message)
+      alert('Erro no login com Google: ' + error.message + ' (Código: ' + error.code + ')')
     }
   }
 
