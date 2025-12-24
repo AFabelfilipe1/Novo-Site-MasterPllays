@@ -1,137 +1,48 @@
-import { useState } from 'react'
-import { signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
-import { auth, googleProvider } from '../firebase'
+// src/pages/Auth.tsx
+import React from 'react';
+import { useAuth } from '../hooks/useAuth';
+import { Navigate } from 'react-router-dom';
 
-export default function Auth() {
-  const [isLogin, setIsLogin] = useState(true)
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: ''
-  })
+const Auth: React.FC = () => {
+  const { user, loading, loginWithGoogle } = useAuth();
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    })
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+      </div>
+    );
   }
 
-  const handleGoogleSignIn = async () => {
-    try {
-      const result = await signInWithPopup(auth, googleProvider)
-      console.log('Google sign-in successful:', result.user)
-      alert('Login com Google realizado com sucesso!')
-    } catch (error: any) {
-      console.error('Google sign-in error:', error)
-      alert('Erro no login com Google: ' + error.message + ' (Código: ' + error.code + ')')
-    }
-  }
-
-  const handleEmailAuth = async (e: React.FormEvent) => {
-    e.preventDefault()
-    try {
-      if (isLogin) {
-        await signInWithEmailAndPassword(auth, formData.email, formData.password)
-        alert('Login realizado com sucesso!')
-      } else {
-        await createUserWithEmailAndPassword(auth, formData.email, formData.password)
-        alert('Conta criada com sucesso!')
-      }
-    } catch (error: any) {
-      console.error('Auth error:', error)
-      alert('Erro: ' + error.message)
-    }
+  if (user) {
+    return <Navigate to="/" replace />;
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-md">
-      <h1 className="text-3xl font-bold text-center mb-8">
-        {isLogin ? 'Entrar' : 'Criar Conta'}
-      </h1>
-
-      <div className="bg-white p-6 rounded-lg shadow-md">
+    <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
+      <h1 className="text-2xl font-bold text-center mb-6">Login</h1>
+      
+      <div className="space-y-4">
         <button
-          onClick={handleGoogleSignIn}
-          className="w-full bg-red-600 text-white py-3 rounded-lg font-semibold hover:bg-red-700 transition-colors mb-4"
+          onClick={loginWithGoogle}
+          className="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-semibold py-3 px-4 rounded-lg transition"
         >
+          <img 
+            src="https://www.google.com/favicon.ico" 
+            alt="Google" 
+            className="w-5 h-5"
+          />
           Continuar com Google
         </button>
+      </div>
 
-        <div className="text-center mb-4">
-          <span className="text-gray-500">ou</span>
-        </div>
-
-        <form onSubmit={handleEmailAuth}>
-          {!isLogin && (
-            <>
-              <div className="mb-4">
-                <label className="block text-gray-700 mb-2">Nome</label>
-                <input
-                  type="text"
-                  name="firstName"
-                  value={formData.firstName}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-gray-700 mb-2">Sobrenome</label>
-                <input
-                  type="text"
-                  name="lastName"
-                  value={formData.lastName}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                />
-              </div>
-            </>
-          )}
-
-          <div className="mb-4">
-            <label className="block text-gray-700 mb-2">Email</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
-
-          <div className="mb-6">
-            <label className="block text-gray-700 mb-2">Senha</label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleInputChange}
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
-          >
-            {isLogin ? 'Entrar' : 'Criar Conta'}
-          </button>
-        </form>
-
-        <div className="text-center mt-4">
-          <button
-            onClick={() => setIsLogin(!isLogin)}
-            className="text-blue-600 hover:text-blue-800"
-          >
-            {isLogin ? 'Não tem conta? Criar uma' : 'Já tem conta? Entrar'}
-          </button>
-        </div>
+      <div className="mt-8 p-4 bg-blue-50 rounded-lg">
+        <h3 className="font-bold mb-2">Configuração Firebase:</h3>
+        <p className="text-sm">Projeto: <code>masterpllays</code></p>
+        <p className="text-sm">Domínio: <code>masterpllays.firebaseapp.com</code></p>
       </div>
     </div>
-  )
-}
+  );
+};
+
+export default Auth;

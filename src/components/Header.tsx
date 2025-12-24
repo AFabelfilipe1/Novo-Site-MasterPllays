@@ -1,42 +1,54 @@
-import { Link } from 'react-router-dom'
+// src/components/Header.tsx
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 
-export default function Header() {
+const Header: React.FC = () => {
+  const { user, logout } = useAuth();
+
   return (
     <header className="bg-gray-900 text-white p-4">
       <div className="container mx-auto flex justify-between items-center">
-        <div className="text-2xl font-bold">
-          <Link to="/">MasterPlays</Link>
-        </div>
-        <nav>
-          <ul className="flex space-x-6">
-            <li>
-              <Link to="/" className="hover:text-gray-300 transition-colors">
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link to="/videos" className="hover:text-gray-300 transition-colors">
-                Vídeos
-              </Link>
-            </li>
-            <li>
-              <Link to="/auth" className="hover:text-gray-300 transition-colors">
-                Entrar
-              </Link>
-            </li>
-            <li>
-              <Link to="/test" className="hover:text-gray-300 transition-colors">
-                Teste
-              </Link>
-            </li>
-            <li>
-              <Link to="/planos" className="hover:text-gray-300 transition-colors">
-                Planos
-              </Link>
-            </li>
-          </ul>
+        <Link to="/" className="text-2xl font-bold">
+          MasterPlays
+        </Link>
+        
+        <nav className="space-x-6">
+          <Link to="/" className="hover:text-gray-300">Home</Link>
+          <Link to="/videos" className="hover:text-gray-300">Vídeos</Link>
+          <Link to="/planos" className="hover:text-gray-300">Planos</Link>
+          
+          {user ? (
+            <div className="inline-flex items-center space-x-4">
+              <span className="text-sm">
+                Olá, {user.displayName?.split(' ')[0] || 'Usuário'}
+              </span>
+              <button
+                onClick={logout}
+                className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-sm"
+              >
+                Sair
+              </button>
+            </div>
+          ) : (
+            <Link 
+              to="/auth" 
+              className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded"
+            >
+              Login
+            </Link>
+          )}
+          
+          <Link 
+            to="/test" 
+            className="bg-yellow-600 hover:bg-yellow-700 px-3 py-1 rounded text-sm"
+          >
+            Test Firebase
+          </Link>
         </nav>
       </div>
     </header>
-  )
-}
+  );
+};
+
+export default Header;
