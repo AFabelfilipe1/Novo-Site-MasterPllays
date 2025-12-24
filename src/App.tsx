@@ -3,8 +3,8 @@ import Header from './components/Header'
 import Footer from './components/Footer'
 import Home from './pages/Home'
 import Videos from './pages/Videos'
+import Auth from './pages/Auth'
 import Planos from './pages/Planos'
-import Auth from './components/Auth'
 import NotFound from './pages/NotFound'
 
 function App() {
@@ -15,8 +15,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/videos" element={<Videos />} />
-          <Route path="/planos" element={<Planos />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/planos" element={<Planos />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

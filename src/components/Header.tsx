@@ -20,13 +20,13 @@ export default function Header() {
               </Link>
             </li>
             <li>
-              <Link to="/planos" className="hover:text-gray-300 transition-colors">
-                Planos
+              <Link to="/auth" className="hover:text-gray-300 transition-colors">
+                Entrar
               </Link>
             </li>
             <li>
-              <Link to="/auth" className="hover:text-gray-300 transition-colors">
-                Conta
+              <Link to="/planos" className="hover:text-gray-300 transition-colors">
+                Planos
               </Link>
             </li>
           </ul>
