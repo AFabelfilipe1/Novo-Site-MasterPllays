@@ -24,6 +24,11 @@ export default function Header() {
                 Planos
               </Link>
             </li>
+            <li>
+              <Link to="/auth" className="hover:text-gray-300 transition-colors">
+                Conta
+              </Link>
+            </li>
           </ul>
         </nav>
       </div>

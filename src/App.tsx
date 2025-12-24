@@ -4,6 +4,7 @@ import Footer from './components/Footer'
 import Home from './pages/Home'
 import Videos from './pages/Videos'
 import Planos from './pages/Planos'
+import Auth from './components/Auth'
 import NotFound from './pages/NotFound'
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/videos" element={<Videos />} />
           <Route path="/planos" element={<Planos />} />
+          <Route path="/auth" element={<Auth />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
