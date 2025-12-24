@@ -1,5 +1,12 @@
 import { useState, useEffect } from 'react';
-import { User, onAuthStateChanged, signInWithPopup, signOut } from 'firebase/auth';
+import { 
+  User, 
+  onAuthStateChanged, 
+  signInWithPopup, 
+  signOut,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword
+} from 'firebase/auth';
 import { auth, googleProvider } from '../firebase';
 
 export const useAuth = () => {
@@ -19,6 +26,14 @@ export const useAuth = () => {
     await signInWithPopup(auth, googleProvider);
   };
 
+  const loginWithEmail = async (email: string, password: string) => {
+    await signInWithEmailAndPassword(auth, email, password);
+  };
+
+  const registerWithEmail = async (email: string, password: string) => {
+    await createUserWithEmailAndPassword(auth, email, password);
+  };
+
   const logout = async () => {
     await signOut(auth);
   };
@@ -27,6 +42,8 @@ export const useAuth = () => {
     user,
     loading,
     loginWithGoogle,
+    loginWithEmail,
+    registerWithEmail,
     logout
   };
 };

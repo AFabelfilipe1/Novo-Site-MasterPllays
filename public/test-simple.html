@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Teste Firebase SIMPLES</title>
+</head>
+<body style="padding: 40px; font-family: Arial;">
+    <h1>🔥 Teste Firebase - masterpllays</h1>
+
+    <div style="background: #e8f5e9; padding: 20px; border-radius: 10px; margin: 20px 0;">
+        <h3>✅ Domínios Configurados:</h3>
+        <ul>
+            <li>localhost ✓</li>
+            <li>afabelfilipe1.github.io ✓</li>
+            <li>masterpllays.firebaseapp.com ✓</li>
+        </ul>
+    </div>
+
+    <button onclick="login()" style="padding: 15px 30px; font-size: 18px; background: #4285F4; color: white; border: none; border-radius: 5px; cursor: pointer;">
+        🔐 Testar Login Google
+    </button>
+
+    <div id="result" style="margin-top: 30px; padding: 20px; background: #f5f5f5; border-radius: 10px; min-height: 100px;"></div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"></script>
+
+    <script>
+        // SUAS CONFIGURAÇÕES
+        const firebaseConfig = {
+            apiKey: "AIzaSyBZqfKbDO4EP8ua3Sv1gOhNgY31gZPmHwU",
+            authDomain: "masterpllays.firebaseapp.com",
+            projectId: "masterpllays",
+            storageBucket: "masterpllays.firebasestorage.app",
+            messagingSenderId: "554976769966",
+            appId: "1:554976769966:web:4fc12441ac7ea490757a3f",
+            measurementId: "G-6MGFHZ7N76"
+        };
+
+        // Inicializar Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.getAuth(app);
+
+        // Mostrar status inicial
+        document.getElementById('result').innerHTML = `
+            <strong>Status:</strong> Firebase configurado!<br>
+            <strong>Projeto:</strong> ${firebaseConfig.projectId}<br>
+            <strong>Domínio:</strong> ${window.location.hostname}
+        `;
+
+        async function login() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Abrindo popup do Google...';
+
+            try {
+                // Criar provedor Google
+                const provider = new firebase.GoogleAuthProvider();
+
+                // Adicionar escopos
+                provider.addScope('profile');
+                provider.addScope('email');
+
+                // Tentar login
+                const result = await firebase.signInWithPopup(auth, provider);
+
+                // Sucesso!
+                resultDiv.innerHTML = `
+                    <div style="background: #d4edda; color: #155724; padding: 20px; border-radius: 10px;">
+                        <h3 style="color: #155724;">✅ LOGIN BEM-SUCEDIDO!</h3>
+                        <p><strong>Nome:</strong> ${result.user.displayName}</p>
+                        <p><strong>Email:</strong> ${result.user.email}</p>
+                        <p><strong>ID:</strong> ${result.user.uid}</p>
+                        ${result.user.photoURL ? `<img src="${result.user.photoURL}" style="width: 80px; height: 80px; border-radius: 50%; margin-top: 10px;">` : ''}
+                    </div>
+                    <p style="margin-top: 20px;">🎉 Agora vá para <strong>Firebase Console → Authentication → Users</strong> para ver seu usuário!</p>
+                `;
+
+            } catch (error) {
+                console.error('Erro detalhado:', error);
+
+                let errorHtml = `
+                    <div style="background: #f8d7da; color: #721c24; padding: 20px; border-radius: 10px;">
+                        <h3 style="color: #721c24;">❌ ERRO NO LOGIN</h3>
+                        <p><strong>Código:</strong> ${error.code}</p>
+                        <p><strong>Mensagem:</strong> ${error.message}</p>
+                    </div>
+                `;
+
+                // Adicionar soluções específicas
+                if (error.code === 'auth/unauthorized-domain') {
+                    errorHtml += `
+                        <div style="background: #fff3cd; color: #856404; padding: 15px; border-radius: 5px; margin-top: 15px;">
+                            <h4>🔧 SOLUÇÃO:</h4>
+                            <p>Adicione este domínio no Firebase Console:</p>
+                            <code>${window.location.hostname}</code>
+                            <p>Vá para: Authentication → Settings → Authorized domains</p>
+                        </div>
+                    `;
+                }
+
+                if (error.code === 'auth/configuration-not-found') {
+                    errorHtml += `
+                        <div style="background: #fff3cd; color: #856404; padding: 15px; border-radius: 5px; margin-top: 15px;">
+                            <h4>🔧 SOLUÇÃO:</h4>
+                            <p>Verifique se o projeto "masterpllays" existe no Firebase Console</p>
+                            <p>Confirme as credenciais estão corretas</p>
+                        </div>
+                    `;
+                }
+
+                if (error.code === 'auth/popup-blocked') {
+                    errorHtml += `
+                        <div style="background: #fff3cd; color: #856404; padding: 15px; border-radius: 5px; margin-top: 15px;">
+                            <h4>🔧 SOLUÇÃO:</h4>
+                            <p>Permita popups neste site</p>
+                            <p>Ou tente em uma janela anônima (Ctrl+Shift+N)</p>
+                        </div>
+                    `;
+                }
+
+                resultDiv.innerHTML = errorHtml;
+            }
+        }
+    </script>
+
+    <div style="margin-top: 40px; padding: 20px; background: #e3f2fd; border-radius: 10px;">
+        <h3>📝 Próximos Passos:</h3>
+        <ol>
+            <li><strong>ATIVAR Google Sign-in</strong> no Firebase Console</li>
+            <li>Testar este arquivo</li>
+            <li>Se funcionar, testar no React app</li>
+        </ol>
+        <a href="https://console.firebase.google.com/project/masterpllays/authentication/sign-in"
+           target="_blank"
+           style="display: inline-block; background: #4285F4; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; margin-top: 10px;">
+            🔧 Abrir Firebase Console Agora
+        </a>
+    </div>
+</body>
+</html>
