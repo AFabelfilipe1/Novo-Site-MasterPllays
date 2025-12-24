@@ -1,24 +1,32 @@
-// Import the functions you need from the SDKs you need
+// src/firebase.js - CONFIGURAÇÃO DEFINITIVA
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider } from 'firebase/auth'
+import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+// ⚠️ SUBSTITUA COM AS CONFIGURAÇÕES REAIS DO SEU APP WEB
+// ⚠️ Obtenha essas configurações do Firebase Console → Seu app web
 const firebaseConfig = {
-  apiKey: "AIzaSyBZqfKbDO4EP8ua3Sv1gOhNgY31gZPmHwU",
-  authDomain: "masterplays.firebaseapp.com",
-  projectId: "masterplays",
-  storageBucket: "masterplays.firebasestorage.app",
+  apiKey: "AIzaSyBZqfKbDO4EP8ua3Sv1gOhNgY31gZPmHwU", // Mantenha esta se for a correta
+  authDomain: "masterpllays.firebaseapp.com", // COM DOIS L
+  projectId: "masterpllays", // COM DOIS L
+  storageBucket: "masterpllays.firebasestorage.app", // COM DOIS L
   messagingSenderId: "554976769966",
-  appId: "1:554976769966:web:4fc12441ac7ea490757a3f"
+  appId: "1:554976769966:web:4fc12441ac7ea490757a3f",
+  measurementId: "G-6MGFHZ7N76"
 };
+
+console.log('🚀 Inicializando Firebase para projeto:', firebaseConfig.projectId);
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// Initialize Firebase Authentication and get a reference to the service
-export const auth = getAuth(app)
-export const googleProvider = new GoogleAuthProvider()
+// Initialize Firebase Authentication
+export const auth = getAuth(app);
+export const googleProvider = new GoogleAuthProvider();
+
+// Configurações do provedor Google
+googleProvider.setCustomParameters({
+  prompt: 'select_account'
+});
+googleProvider.setCustomParameters({
+  prompt: 'select_account'
+});
