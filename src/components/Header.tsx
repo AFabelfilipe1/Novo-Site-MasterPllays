@@ -20,6 +20,7 @@ const Header: React.FC = () => {
           
           {user ? (
             <div className="inline-flex items-center space-x-4">
+              <Link to="/profile" className="hover:text-gray-300">Perfil</Link>
               <span className="text-sm">
                 Olá, {user.displayName?.split(' ')[0] || 'Usuário'}
               </span>

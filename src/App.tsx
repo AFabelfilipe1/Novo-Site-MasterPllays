@@ -4,6 +4,7 @@ import Footer from './components/Footer'
 import Home from './pages/Home'
 import Videos from './pages/Videos'
 import Auth from './pages/Auth'
+import Profile from './pages/Profile'
 import Planos from './pages/Planos'
 import NotFound from './pages/NotFound'
 // @ts-ignore
@@ -18,6 +19,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/videos" element={<Videos />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="/test" element={<SimpleTest />} />
           <Route path="/planos" element={<Planos />} />
           <Route path="*" element={<NotFound />} />
