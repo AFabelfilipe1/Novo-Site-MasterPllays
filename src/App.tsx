@@ -5,8 +5,8 @@ import Home from './pages/Home'
 import Videos from './pages/Videos'
 import Auth from './pages/Auth'
 import Profile from './pages/Profile'
-import Checkout from './pages/Checkout'
 import Planos from './pages/Planos'
+import Pagamento from './pages/Pagamento'
 import NotFound from './pages/NotFound'
 // @ts-ignore
 import SimpleTest from './components/SimpleTest'
@@ -21,9 +21,9 @@ function App() {
           <Route path="/videos" element={<Videos />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/test" element={<SimpleTest />} />
           <Route path="/planos" element={<Planos />} />
+          <Route path="/pagamento" element={<Pagamento />} />
+          <Route path="/test" element={<SimpleTest />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

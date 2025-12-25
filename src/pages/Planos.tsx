@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../hooks/useAuth'
 
 interface Plan {
   nome: string
@@ -9,7 +10,7 @@ interface Plan {
 
 export default function Planos() {
   const navigate = useNavigate()
-  const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null)
+  const { user } = useAuth()
 
   const planos: Plan[] = [
     {
@@ -30,7 +31,14 @@ export default function Planos() {
   ]
 
   const handleChoosePlan = (plano: Plan) => {
-    navigate('/checkout', { state: { plan: plano } })
+    if (!user) {
+      // Se não estiver logado, redirecionar para login
+      navigate('/auth')
+      return
+    }
+    
+    // Redirecionar para página de pagamento com parâmetros do plano
+    navigate(`/pagamento?plano=${encodeURIComponent(plano.nome)}&preco=${encodeURIComponent(plano.preco)}`)
   }
 
   return (
