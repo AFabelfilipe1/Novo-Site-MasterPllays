@@ -10,7 +10,6 @@ import {
   reauthenticateWithCredential,
   EmailAuthProvider
 } from 'firebase/auth';
-import { auth } from '../firebase';
 
 const Profile: React.FC = () => {
   const { user, logout } = useAuth();
@@ -66,10 +65,11 @@ const Profile: React.FC = () => {
       // Recarregar a página para atualizar o header
       setTimeout(() => window.location.reload(), 1500);
 
-    } catch (err: any) {
-      console.error('Erro ao atualizar perfil:', err);
+    } catch (err: unknown) {
+      const error = err as { code: string; message: string };
+      console.error('Erro ao atualizar perfil:', error);
 
-      switch (err.code) {
+      switch (error.code) {
         case 'auth/requires-recent-login':
           setError('Para alterar email ou senha, faça login novamente.');
           break;
@@ -105,10 +105,11 @@ const Profile: React.FC = () => {
       setSuccess('Conta excluída com sucesso.');
       setTimeout(() => logout(), 2000);
 
-    } catch (err: any) {
-      console.error('Erro ao excluir conta:', err);
+    } catch (err: unknown) {
+      const error = err as { code: string; message: string };
+      console.error('Erro ao excluir conta:', error);
 
-      switch (err.code) {
+      switch (error.code) {
         case 'auth/wrong-password':
           setError('Senha incorreta.');
           break;

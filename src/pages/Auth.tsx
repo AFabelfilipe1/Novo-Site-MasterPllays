@@ -34,11 +34,12 @@ const Auth: React.FC = () => {
       } else {
         await registerWithEmail(email, password);
       }
-    } catch (err: any) {
-      console.error('Erro de autenticação:', err);
+    } catch (err: unknown) {
+      const error = err as { code: string; message: string };
+      console.error('Erro de autenticação:', error);
 
       // Traduzir erros do Firebase para português
-      switch (err.code) {
+      switch (error.code) {
         case 'auth/invalid-email':
           setError('Email inválido.');
           break;
@@ -72,7 +73,7 @@ const Auth: React.FC = () => {
     setError('');
     try {
       await loginWithGoogle();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Erro Google login:', err);
       setError('Erro ao fazer login com Google. Tente novamente.');
     }

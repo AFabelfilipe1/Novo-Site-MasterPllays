@@ -8,7 +8,6 @@ import Profile from './pages/Profile'
 import Planos from './pages/Planos'
 import Pagamento from './pages/Pagamento'
 import NotFound from './pages/NotFound'
-// @ts-ignore
 import SimpleTest from './components/SimpleTest'
 
 function App() {

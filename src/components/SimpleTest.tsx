@@ -14,9 +14,10 @@ const SimpleTest: React.FC = () => {
     try {
       await loginWithGoogle();
       setMessage('Login realizado com sucesso!');
-    } catch (err: any) {
-      console.error('Erro detalhado:', err);
-      setError(`Erro: ${err.code} - ${err.message}`);
+    } catch (err: unknown) {
+      const error = err as Error;
+      console.error('Erro detalhado:', error);
+      setError(`Erro: ${error.message}`);
       setMessage('');
     }
   };
@@ -25,8 +26,9 @@ const SimpleTest: React.FC = () => {
     try {
       await logout();
       setMessage('Logout realizado com sucesso!');
-    } catch (err: any) {
-      setError(`Erro no logout: ${err.message}`);
+    } catch (err: unknown) {
+      const error = err as Error;
+      setError(`Erro no logout: ${error.message}`);
     }
   };
 

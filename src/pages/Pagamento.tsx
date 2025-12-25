@@ -3,12 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 
-interface Plan {
-  nome: string;
-  preco: string;
-  recursos: string[];
-}
-
 const Pagamento: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
