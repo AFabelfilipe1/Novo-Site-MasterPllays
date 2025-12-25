@@ -24,7 +24,7 @@ const Header: React.FC = () => {
             <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-red-600 to-red-800 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-lg md:text-xl">M</span>
             </div>
-            <span className="text-white font-bold text-xl md:text-2xl tracking-wide">MasterPlays</span>
+            <span className="text-white font-bold text-xl md:text-2xl tracking-wide">MasterPllays</span>
           </Link>
 
           {/* Desktop Navigation */}

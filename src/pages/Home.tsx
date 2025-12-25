@@ -307,7 +307,7 @@ const Home: React.FC = () => {
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-2xl">
             <h1 className="text-5xl md:text-7xl font-bold text-white mb-4">
-              Master<span className="text-red-600">Plays</span>
+              Master<span className="text-red-600">Pllays</span>
             </h1>
             <p className="text-xl md:text-2xl text-gray-300 mb-8 leading-relaxed">
               Assista aos melhores conteúdos exclusivos. Tutoriais, cursos e entretenimento premium em um só lugar.
