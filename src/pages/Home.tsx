@@ -1,5 +1,5 @@
 // src/pages/Home.tsx
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 
@@ -11,65 +11,273 @@ interface Video {
   duration: string;
   isNew?: boolean;
   isFeatured?: boolean;
+  description?: string;
+  creator?: string;
+  views?: string;
 }
+
+interface CarouselProps {
+  videos: Video[];
+  title: string;
+  onVideoClick?: (video: Video) => void;
+}
+
+const VideoCarousel: React.FC<CarouselProps> = ({ videos, title, onVideoClick }) => {
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
+  const checkScrollButtons = () => {
+    if (carouselRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = carouselRef.current;
+      setCanScrollLeft(scrollLeft > 0);
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
+    }
+  };
+
+  const scroll = (direction: 'left' | 'right') => {
+    if (carouselRef.current) {
+      const scrollAmount = 320; // Largura aproximada de um card + gap
+      const newScrollLeft = carouselRef.current.scrollLeft + (direction === 'left' ? -scrollAmount : scrollAmount);
+      carouselRef.current.scrollTo({ left: newScrollLeft, behavior: 'smooth' });
+    }
+  };
+
+  useEffect(() => {
+    checkScrollButtons();
+    const handleScroll = () => checkScrollButtons();
+    const carousel = carouselRef.current;
+    if (carousel) {
+      carousel.addEventListener('scroll', handleScroll);
+      return () => carousel.removeEventListener('scroll', handleScroll);
+    }
+  }, [videos]);
+
+  return (
+    <section className="mb-12">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-bold text-white">{title}</h2>
+        <div className="flex space-x-2">
+          <button
+            onClick={() => scroll('left')}
+            disabled={!canScrollLeft}
+            className={`p-2 rounded-full bg-gray-800 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity`}
+          >
+            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <button
+            onClick={() => scroll('right')}
+            disabled={!canScrollRight}
+            className={`p-2 rounded-full bg-gray-800 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity`}
+          >
+            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div
+        ref={carouselRef}
+        className="flex space-x-4 overflow-x-auto scrollbar-hide pb-4"
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+      >
+        {videos.map((video) => (
+          <div
+            key={video.id}
+            className="flex-shrink-0 w-80 group cursor-pointer"
+            onClick={() => onVideoClick?.(video)}
+          >
+            <div className="relative aspect-video bg-gray-800 rounded-lg overflow-hidden mb-3">
+              <img
+                src={video.thumbnail}
+                alt={video.title}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              />
+              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-300" />
+
+              {/* Play button overlay */}
+              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="w-16 h-16 bg-red-600/90 rounded-full flex items-center justify-center">
+                  <svg className="w-8 h-8 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z"/>
+                  </svg>
+                </div>
+              </div>
+
+              {/* Duration */}
+              <div className="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-2 py-1 rounded">
+                {video.duration}
+              </div>
+
+              {/* New badge */}
+              {video.isNew && (
+                <div className="absolute top-2 left-2 bg-red-600 text-white text-xs px-2 py-1 rounded font-semibold">
+                  NOVO
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-1">
+              <h3 className="text-white font-semibold text-sm group-hover:text-red-400 transition-colors duration-200 line-clamp-2">
+                {video.title}
+              </h3>
+              {video.creator && (
+                <p className="text-gray-400 text-xs">{video.creator}</p>
+              )}
+              {video.views && (
+                <p className="text-gray-500 text-xs">{video.views} visualizações</p>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+};
 
 const Home: React.FC = () => {
   const { user } = useAuth();
   const [featuredVideo, setFeaturedVideo] = useState<Video | null>(null);
   const [videos, setVideos] = useState<Video[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState('Todos');
 
   useEffect(() => {
-    // Dados mockados de vídeos
+    // Dados mockados de vídeos expandidos
     const videoData: Video[] = [
       {
         id: '1',
-        title: 'Tutorial React Avançado',
+        title: 'Tutorial React Avançado - Hooks e Context API',
         thumbnail: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=400&h=225&fit=crop',
         category: 'Programação',
         duration: '45:30',
         isNew: true,
-        isFeatured: true
+        isFeatured: true,
+        description: 'Aprenda os conceitos avançados do React com hooks modernos e gerenciamento de estado global.',
+        creator: 'DevMaster',
+        views: '12.5K'
       },
       {
         id: '2',
-        title: 'Design de Interfaces Modernas',
+        title: 'Design de Interfaces Modernas com Figma',
         thumbnail: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400&h=225&fit=crop',
         category: 'Design',
         duration: '32:15',
-        isNew: false
+        isNew: false,
+        description: 'Crie interfaces incríveis e modernas usando as melhores práticas do Figma.',
+        creator: 'DesignPro',
+        views: '8.2K'
       },
       {
         id: '3',
-        title: 'Machine Learning Básico',
+        title: 'Machine Learning Básico - Introdução à IA',
         thumbnail: 'https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=400&h=225&fit=crop',
         category: 'IA',
         duration: '28:45',
-        isNew: true
+        isNew: true,
+        description: 'Descubra os fundamentos da Inteligência Artificial e Machine Learning.',
+        creator: 'AI Expert',
+        views: '15.7K'
       },
       {
         id: '4',
-        title: 'Fotografia Profissional',
+        title: 'Fotografia Profissional - Técnicas Avançadas',
         thumbnail: 'https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=400&h=225&fit=crop',
         category: 'Fotografia',
         duration: '52:20',
-        isNew: false
+        isNew: false,
+        description: 'Domine técnicas profissionais de fotografia e edição de imagens.',
+        creator: 'PhotoMaster',
+        views: '6.9K'
       },
       {
         id: '5',
-        title: 'Música Eletrônica 2024',
+        title: 'Produção de Música Eletrônica 2024',
         thumbnail: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=225&fit=crop',
         category: 'Música',
         duration: '38:12',
-        isNew: true
+        isNew: true,
+        description: 'Aprenda a produzir tracks eletrônicos com equipamentos modernos.',
+        creator: 'MusicProducer',
+        views: '9.3K'
       },
       {
         id: '6',
-        title: 'Viagem pelo Mundo',
+        title: 'Viagem pelo Mundo - Destinos Incríveis',
         thumbnail: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400&h=225&fit=crop',
         category: 'Viagem',
         duration: '41:33',
-        isNew: false
+        isNew: false,
+        description: 'Explore os destinos mais incríveis do mundo com dicas exclusivas.',
+        creator: 'TravelExplorer',
+        views: '11.1K'
+      },
+      {
+        id: '7',
+        title: 'Jogos Indie - Descobertas 2024',
+        thumbnail: 'https://images.unsplash.com/photo-1556438064-2d7646166914?w=400&h=225&fit=crop',
+        category: 'Games',
+        duration: '29:45',
+        isNew: true,
+        description: 'Conheça os melhores jogos indie lançados neste ano.',
+        creator: 'GameReviewer',
+        views: '18.2K'
+      },
+      {
+        id: '8',
+        title: 'Culinária Gourmet - Receitas Premium',
+        thumbnail: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=225&fit=crop',
+        category: 'Culinária',
+        duration: '35:20',
+        isNew: false,
+        description: 'Receitas gourmet preparadas por chefs renomados.',
+        creator: 'ChefGourmet',
+        views: '7.8K'
+      },
+      {
+        id: '9',
+        title: 'Fitness e Saúde - Rotina Completa',
+        thumbnail: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=225&fit=crop',
+        category: 'Fitness',
+        duration: '42:10',
+        isNew: false,
+        description: 'Rotina completa de exercícios e dicas de saúde.',
+        creator: 'FitnessCoach',
+        views: '14.6K'
+      },
+      {
+        id: '10',
+        title: 'Desenvolvimento Mobile com React Native',
+        thumbnail: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=400&h=225&fit=crop',
+        category: 'Programação',
+        duration: '55:20',
+        isNew: true,
+        description: 'Crie aplicativos móveis incríveis com React Native.',
+        creator: 'MobileDev',
+        views: '22.1K'
+      },
+      {
+        id: '11',
+        title: 'Ilustração Digital - Do Básico ao Avançado',
+        thumbnail: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=400&h=225&fit=crop',
+        category: 'Design',
+        duration: '48:15',
+        isNew: false,
+        description: 'Aprenda ilustração digital com técnicas profissionais.',
+        creator: 'DigitalArtist',
+        views: '9.8K'
+      },
+      {
+        id: '12',
+        title: 'Deep Learning com TensorFlow',
+        thumbnail: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=400&h=225&fit=crop',
+        category: 'IA',
+        duration: '67:30',
+        isNew: true,
+        description: 'Implemente redes neurais profundas com TensorFlow.',
+        creator: 'DataScientist',
+        views: '16.4K'
       }
     ];
 
@@ -79,53 +287,6 @@ const Home: React.FC = () => {
     const featured = videoData.find(video => video.isFeatured) || videoData[0];
     setFeaturedVideo(featured);
   }, []);
-
-  const categories = ['Todos', 'Programação', 'Design', 'IA', 'Fotografia', 'Música', 'Viagem'];
-
-  const filteredVideos = useMemo(() => {
-    return selectedCategory === 'Todos'
-      ? videos
-      : videos.filter(video => video.category === selectedCategory);
-  }, [videos, selectedCategory]);
-
-  const VideoCard: React.FC<{ video: Video }> = ({ video }) => (
-    <div className="group cursor-pointer">
-      <div className="relative overflow-hidden rounded-lg bg-gray-800 aspect-video">
-        <img
-          src={video.thumbnail}
-          alt={video.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-        />
-        <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-300" />
-
-        {/* Play button overlay */}
-        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <div className="w-16 h-16 bg-red-600/90 rounded-full flex items-center justify-center">
-            <svg className="w-8 h-8 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M8 5v14l11-7z"/>
-            </svg>
-          </div>
-        </div>
-
-        {/* Duration */}
-        <div className="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-2 py-1 rounded">
-          {video.duration}
-        </div>
-
-        {/* New badge */}
-        {video.isNew && (
-          <div className="absolute top-2 left-2 bg-red-600 text-white text-xs px-2 py-1 rounded font-semibold">
-            NOVO
-          </div>
-        )}
-      </div>
-
-      <h3 className="mt-2 text-white font-medium text-sm group-hover:text-red-400 transition-colors duration-200 line-clamp-2">
-        {video.title}
-      </h3>
-      <p className="text-gray-400 text-xs">{video.category}</p>
-    </div>
-  );
 
   return (
     <div className="min-h-screen bg-black">
@@ -193,52 +354,47 @@ const Home: React.FC = () => {
 
         {/* Continue Watching */}
         {user && (
-          <section className="mb-12">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <h2 className="text-2xl font-bold text-white mb-6">Continuar Assistindo</h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                {videos.slice(0, 6).map((video) => (
-                  <VideoCard key={video.id} video={video} />
-                ))}
-              </div>
-            </div>
-          </section>
+          <VideoCarousel
+            videos={videos.slice(0, 6)}
+            title="Continuar Assistindo"
+            onVideoClick={(video) => console.log('Play video:', video.title)}
+          />
         )}
 
-        {/* Category Filter */}
-        <section className="mb-8">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-wrap gap-2 mb-6">
-              {categories.map((category) => (
-                <button
-                  key={category}
-                  onClick={() => setSelectedCategory(category)}
-                  className={`px-4 py-2 rounded-full font-medium transition-colors duration-200 ${
-                    selectedCategory === category
-                      ? 'bg-red-600 text-white'
-                      : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-                  }`}
-                >
-                  {category}
-                </button>
-              ))}
-            </div>
-          </div>
-        </section>
+        {/* Trending Now */}
+        <VideoCarousel
+          videos={videos.filter(v => v.isNew).slice(0, 8)}
+          title="Em Alta Agora"
+          onVideoClick={(video) => console.log('Play video:', video.title)}
+        />
 
-        {/* Video Grid */}
-        <section>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-2xl font-bold text-white mb-6">
-              {selectedCategory === 'Todos' ? 'Conteúdo em Destaque' : selectedCategory}
-            </h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-              {filteredVideos.map((video: Video) => (
-                <VideoCard key={video.id} video={video} />
-              ))}
-            </div>
-          </div>
-        </section>
+        {/* Programming Videos */}
+        <VideoCarousel
+          videos={videos.filter(v => v.category === 'Programação').slice(0, 8)}
+          title="Programação"
+          onVideoClick={(video) => console.log('Play video:', video.title)}
+        />
+
+        {/* Design Videos */}
+        <VideoCarousel
+          videos={videos.filter(v => v.category === 'Design').slice(0, 8)}
+          title="Design & Criatividade"
+          onVideoClick={(video) => console.log('Play video:', video.title)}
+        />
+
+        {/* AI Videos */}
+        <VideoCarousel
+          videos={videos.filter(v => v.category === 'IA').slice(0, 8)}
+          title="Inteligência Artificial"
+          onVideoClick={(video) => console.log('Play video:', video.title)}
+        />
+
+        {/* More Categories */}
+        <VideoCarousel
+          videos={videos.filter(v => ['Fotografia', 'Música', 'Viagem', 'Games'].includes(v.category)).slice(0, 8)}
+          title="Mais Categorias"
+          onVideoClick={(video) => console.log('Play video:', video.title)}
+        />
 
         {/* CTA Section */}
         {!user && (
